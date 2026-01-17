@@ -1,6 +1,5 @@
-// pages/api/index.ts
 import type { NextApiRequest, NextApiResponse } from 'next'
-import storage from '../../server/storage'
+import { storage } from '../../server/storage'
 import { api } from '@shared/routes'
 import { z } from 'zod'
 
