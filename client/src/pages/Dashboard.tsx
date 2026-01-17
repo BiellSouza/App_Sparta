@@ -9,8 +9,10 @@ import { motion } from "framer-motion";
 export default function Dashboard() {
   const { data: trainings, isLoading } = useTrainings();
 
-  // Assuming we use the first training for the main card display
-  const todayTraining = trainings?.[0] || {
+  // Find the featured training or fallback to the first one
+  const featuredTraining = trainings?.find(t => t.isFeatured) || trainings?.[0];
+  
+  const todayTraining = featuredTraining || {
     title: "TREINO DE TIRO",
     description: "O treino deverá ser realizado em pista de atletismo ou local plano marcado. Aqueça 10min antes de iniciar os tiros.",
     durationSeconds: 3600
