@@ -1,7 +1,7 @@
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { insertUserSchema, type InsertUser } from "@shared/schema";
-import { useCreateUser } from "@/hooks/use-users";
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { insertUserSchema, type InsertUser } from '@shared/schema'
+import { useCreateUser } from '@/hooks/use-users'
 import {
   Form,
   FormControl,
@@ -9,77 +9,77 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Swords } from "lucide-react";
-import { motion } from "framer-motion";
-import { useLocation } from "wouter";
-import { useToast } from "@/hooks/use-toast";
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Swords } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { useLocation } from 'wouter'
+import { useToast } from '@/hooks/use-toast'
 
 export default function Signup() {
-  const { mutate: signup, isPending } = useCreateUser();
-  const [, setLocation] = useLocation();
-  const { toast } = useToast();
-  
+  const { mutate: signup, isPending } = useCreateUser()
+  const [, setLocation] = useLocation()
+  const { toast } = useToast()
+
   const form = useForm<InsertUser>({
     resolver: zodResolver(insertUserSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      password: "",
+      name: '',
+      email: '',
+      password: '',
     },
-  });
+  })
 
   const handleLogin = async () => {
-    const email = form.getValues("email");
-    const password = form.getValues("password");
-    
+    const email = form.getValues('email')
+    const password = form.getValues('password')
+
     if (!email || !password) {
       toast({
-        title: "Erro",
-        description: "Preencha email e senha para entrar",
-        variant: "destructive",
-      });
-      return;
+        title: 'Erro',
+        description: 'Preencha email e senha para entrar',
+        variant: 'destructive',
+      })
+      return
     }
 
     try {
-      const res = await fetch("/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
-      });
-      
+      })
+
       if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.message || "Erro ao entrar");
+        const err = await res.json()
+        throw new Error(err.message || 'Erro ao entrar')
       }
-      
-      const user = await res.json();
-      localStorage.setItem("user", JSON.stringify(user));
-      setLocation("/dashboard");
+
+      const user = await res.json()
+      localStorage.setItem('user', JSON.stringify(user))
+      setLocation('/dashboard')
     } catch (err: any) {
       toast({
-        title: "Erro",
+        title: 'Erro',
         description: err.message,
-        variant: "destructive",
-      });
+        variant: 'destructive',
+      })
     }
-  };
+  }
 
   const onSubmit = (data: InsertUser) => {
     signup(data, {
       onSuccess: (user) => {
-        localStorage.setItem("user", JSON.stringify(user));
-        setLocation("/dashboard");
+        localStorage.setItem('user', JSON.stringify(user))
+        setLocation('/dashboard')
       },
-    });
-  };
+    })
+  }
 
   return (
     <div className="min-h-screen bg-muted/20 flex flex-col items-center justify-center p-4">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md bg-card p-8 rounded-2xl shadow-xl border"
@@ -88,9 +88,15 @@ export default function Signup() {
           <div className="bg-primary/10 p-4 rounded-full mb-4">
             <Swords className="h-12 w-12 text-primary" />
           </div>
-          <h1 className="text-sm font-bold text-muted-foreground tracking-widest uppercase mb-1">CADASTRO</h1>
-          <h2 className="text-2xl font-black text-foreground text-center leading-tight">PREENCHA COM SEUS DADOS</h2>
-          <p className="text-primary font-medium mt-1 italic">Venha ser um Spartano!</p>
+          <h1 className="text-sm font-bold text-muted-foreground tracking-widest uppercase mb-1">
+            CADASTRO
+          </h1>
+          <h2 className="text-2xl font-black text-foreground text-center leading-tight">
+            PREENCHA COM SEUS DADOS
+          </h2>
+          <p className="text-primary font-medium mt-1 italic">
+            Venha ser um Spartano!
+          </p>
         </div>
 
         <Form {...form}>
@@ -101,7 +107,12 @@ export default function Signup() {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="Nome..." {...field} className="h-12 bg-secondary/30" />
+                    <Input
+                      placeholder="Nome..."
+                      {...field}
+                      className="h-12 bg-secondary/30"
+                      required
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -113,7 +124,31 @@ export default function Signup() {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input type="email" placeholder="E-mail..." {...field} className="h-12 bg-secondary/30" />
+                    <Input
+                      type="email"
+                      placeholder="E-mail..."
+                      {...field}
+                      className="h-12 bg-secondary/30"
+                      required
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      type="tel"
+                      placeholder="21000000000"
+                      {...field}
+                      className="h-12 bg-secondary/30"
+                      required
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -125,7 +160,13 @@ export default function Signup() {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input type="password" placeholder="Senha..." {...field} className="h-12 bg-secondary/30" />
+                    <Input
+                      type="password"
+                      placeholder="Senha..."
+                      {...field}
+                      className="h-12 bg-secondary/30"
+                      required
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -133,26 +174,31 @@ export default function Signup() {
             />
 
             <div className="pt-4 space-y-3">
-              <Button type="submit" className="w-full h-12 text-lg font-bold shadow-lg shadow-primary/20" disabled={isPending}>
-                {isPending ? "CRIANDO CONTA..." : "CADASTRAR"}
+              <Button
+                type="submit"
+                className="w-full h-12 text-lg font-bold shadow-lg shadow-primary/20"
+                disabled={isPending}
+              >
+                {isPending ? 'CRIANDO CONTA...' : 'CADASTRAR'}
               </Button>
-              
-              <Button 
-                type="button" 
-                variant="outline" 
+
+              <Button
+                type="button"
+                variant="outline"
                 onClick={handleLogin}
                 className="w-full h-12 text-lg font-bold border-2 border-primary/20 text-primary hover:bg-primary/5"
               >
                 ENTRAR (LOGIN)
               </Button>
             </div>
-            
+
             <p className="text-center text-xs text-muted-foreground mt-4 italic flex items-center justify-center gap-1">
-              <span className="text-destructive font-bold">⚠️</span> Crie uma Senha que não esqueça!
+              <span className="text-destructive font-bold">⚠️</span> Crie uma
+              Senha que não esqueça!
             </p>
           </form>
         </Form>
       </motion.div>
     </div>
-  );
+  )
 }
