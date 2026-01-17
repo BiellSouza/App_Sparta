@@ -1,6 +1,6 @@
 // pages/api/index.ts
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { storage } from '../../server/storage'
+import storage from '../../server/storage'
 import { api } from '@shared/routes'
 import { z } from 'zod'
 
@@ -11,7 +11,7 @@ export default async function handler(
   try {
     const { url, method } = req
 
-    // ---------------- Users ----------------
+    // Users
     if (url?.endsWith('/api/users') && method === 'POST') {
       const input = api.users.create.input.parse(req.body)
       const existing = await storage.getUserByEmail(input.email)
@@ -30,7 +30,7 @@ export default async function handler(
       return res.status(200).json(user)
     }
 
-    // ---------------- Trainings ----------------
+    // Trainings
     if (url?.endsWith('/api/trainings') && method === 'GET') {
       const trainings = await storage.getTrainings()
       return res.status(200).json(trainings)
@@ -42,9 +42,9 @@ export default async function handler(
       return res.status(201).json(training)
     }
 
-    // ---------------- Logs ----------------
+    // Logs
     if (url?.endsWith('/api/logs') && method === 'GET') {
-      const logs = await storage.getLogs(1) // mock userId
+      const logs = await storage.getLogs(1)
       return res.status(200).json(logs)
     }
 
@@ -54,7 +54,6 @@ export default async function handler(
       return res.status(201).json(log)
     }
 
-    // ---------------- Fallback ----------------
     return res.status(404).json({ message: 'Rota não encontrada' })
   } catch (err) {
     if (err instanceof z.ZodError) {
