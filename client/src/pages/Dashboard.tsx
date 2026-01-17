@@ -1,6 +1,6 @@
 import { Header } from "@/components/Header";
 import { useTrainings } from "@/hooks/use-trainings";
-import { TrainingModal } from "@/components/TrainingModal";
+import { TrainingModal, AddTrainingModal } from "@/components/TrainingModal";
 import { Link } from "wouter";
 import { Clock, Dumbbell, BarChart3, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -58,6 +58,7 @@ export default function Dashboard() {
 
         {/* Action Grid */}
         <div className="grid grid-cols-2 gap-4">
+          <AddTrainingModal />
           <TrainingModal />
           
           <Button 
@@ -67,15 +68,6 @@ export default function Dashboard() {
           >
             <Clock className="h-10 w-10 text-primary" />
             <span className="font-bold text-primary">CRONÔMETRO</span>
-          </Button>
-
-          <Button 
-            variant="outline" 
-            className="aspect-square h-auto w-full flex-col gap-2 border-2 border-primary/10 hover:border-primary/30 hover:bg-primary/5 transition-all shadow-sm hover:shadow-md"
-            disabled
-          >
-            <Dumbbell className="h-10 w-10 text-primary" />
-            <span className="font-bold text-primary">EXERCÍCIOS</span>
           </Button>
 
           <Link href="/history">
