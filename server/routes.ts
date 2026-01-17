@@ -36,6 +36,22 @@ export async function registerRoutes(
     res.json(trainings);
   });
 
+  app.post(api.trainings.create.path, async (req, res) => {
+    try {
+      const input = api.trainings.create.input.parse(req.body);
+      const training = await storage.createTraining(input as any);
+      res.status(201).json(training);
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        return res.status(400).json({
+          message: err.errors[0].message,
+          field: err.errors[0].path.join('.'),
+        });
+      }
+      throw err;
+    }
+  });
+
   // Logs
   app.post(api.logs.create.path, async (req, res) => {
     try {

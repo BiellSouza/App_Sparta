@@ -25,6 +25,8 @@ export const trainingLogs = pgTable("training_logs", {
   userId: integer("user_id").notNull(), // simplified relation
   trainingId: integer("training_id").notNull(), // simplified relation
   date: timestamp("date").defaultNow(),
+  startTime: text("start_time"), // format "HH:mm"
+  endTime: text("end_time"),     // format "HH:mm"
   keptPace: boolean("kept_pace").default(false),
   withinTime: boolean("within_time").default(false),
   allReps: boolean("all_reps").default(false),

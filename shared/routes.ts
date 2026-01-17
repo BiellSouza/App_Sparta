@@ -34,6 +34,15 @@ export const api = {
         200: z.array(z.custom<typeof trainings.$inferSelect>()),
       },
     },
+    create: {
+      method: 'POST' as const,
+      path: '/api/trainings',
+      input: insertTrainingSchema,
+      responses: {
+        201: z.custom<typeof trainings.$inferSelect>(),
+        400: errorSchemas.validation,
+      },
+    },
   },
   logs: {
     create: {
