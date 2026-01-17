@@ -30,6 +30,25 @@ export async function registerRoutes(
     }
   });
 
+  app.post(api.users.login.path, async (req, res) => {
+    try {
+      const { email, password } = api.users.login.input.parse(req.body);
+      const user = await storage.getUserByEmail(email);
+      if (!user || user.password !== password) {
+        return res.status(401).json({ message: "Invalid email or password" });
+      }
+      res.json(user);
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        return res.status(400).json({
+          message: err.errors[0].message,
+          field: err.errors[0].path.join('.'),
+        });
+      }
+      throw err;
+    }
+  });
+
   // Trainings
   app.get(api.trainings.list.path, async (req, res) => {
     const trainings = await storage.getTrainings();

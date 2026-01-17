@@ -14,6 +14,13 @@ import { Input } from "@/components/ui/input";
 import { useCreateLog } from "@/hooks/use-logs";
 import { useTrainings } from "@/hooks/use-trainings";
 import { Plus, CheckCircle2 } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function TrainingModal() {
   const [open, setOpen] = useState(false);
@@ -21,7 +28,7 @@ export function TrainingModal() {
   const { data: trainings } = useTrainings();
   
   const [formData, setFormData] = useState({
-    trainingId: 1,
+    trainingId: "",
     startTime: "",
     endTime: "",
     keptPace: false,
@@ -32,10 +39,12 @@ export function TrainingModal() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.trainingId) return;
+
     createLog(
       {
         userId: 1,
-        trainingId: formData.trainingId,
+        trainingId: parseInt(formData.trainingId),
         startTime: formData.startTime,
         endTime: formData.endTime,
         keptPace: formData.keptPace,
@@ -48,7 +57,7 @@ export function TrainingModal() {
         onSuccess: () => {
           setOpen(false);
           setFormData({
-            trainingId: 1,
+            trainingId: "",
             startTime: "",
             endTime: "",
             keptPace: false,
@@ -79,6 +88,25 @@ export function TrainingModal() {
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="grid gap-6 py-4">
+          <div className="grid gap-2">
+            <Label>Escolha o Treino</Label>
+            <Select 
+              value={formData.trainingId} 
+              onValueChange={(v) => setFormData(prev => ({ ...prev, trainingId: v }))}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Selecione um treino..." />
+              </SelectTrigger>
+              <SelectContent>
+                {trainings?.map((t) => (
+                  <SelectItem key={t.id} value={t.id.toString()}>
+                    {t.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-2">
               <Label htmlFor="startTime">Início</Label>
@@ -146,7 +174,7 @@ export function TrainingModal() {
             />
           </div>
 
-          <Button type="submit" className="w-full h-12 text-lg font-bold shadow-lg shadow-primary/20" disabled={isPending}>
+          <Button type="submit" className="w-full h-12 text-lg font-bold shadow-lg shadow-primary/20" disabled={isPending || !formData.trainingId}>
             {isPending ? "SALVANDO..." : "SALVAR INFORMAÇÕES"}
           </Button>
         </form>
@@ -157,12 +185,15 @@ export function TrainingModal() {
 
 export function AddTrainingModal() {
   const [open, setOpen] = useState(false);
-  const { mutate: createTraining, isPending } = useTrainings() as any; // Using simplified access
+  const { isPending } = useTrainings() as any; 
   
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     durationSeconds: 3600,
+    pace: "",
+    tempo: "",
+    reps: "",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -173,7 +204,7 @@ export function AddTrainingModal() {
       body: JSON.stringify({ ...formData, isFeatured: true }),
     }).then(() => {
       setOpen(false);
-      window.location.reload(); // Quick refresh to see new training
+      window.location.reload(); 
     });
   };
 
@@ -214,6 +245,37 @@ export function AddTrainingModal() {
               className="resize-none"
             />
           </div>
+
+          <div className="grid grid-cols-3 gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="pace">Pace</Label>
+              <Input
+                id="pace"
+                value={formData.pace}
+                onChange={(e) => setFormData(prev => ({ ...prev, pace: e.target.value }))}
+                placeholder="5:00"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="tempo">Tempo</Label>
+              <Input
+                id="tempo"
+                value={formData.tempo}
+                onChange={(e) => setFormData(prev => ({ ...prev, tempo: e.target.value }))}
+                placeholder="60m"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="reps">Reps</Label>
+              <Input
+                id="reps"
+                value={formData.reps}
+                onChange={(e) => setFormData(prev => ({ ...prev, reps: e.target.value }))}
+                placeholder="10"
+              />
+            </div>
+          </div>
+
           <Button type="submit" className="w-full h-12 text-lg font-bold shadow-lg shadow-primary/20" disabled={isPending}>
             {isPending ? "CRIANDO..." : "CRIAR TREINO"}
           </Button>
@@ -222,4 +284,3 @@ export function AddTrainingModal() {
     </Dialog>
   );
 }
-

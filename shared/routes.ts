@@ -25,6 +25,16 @@ export const api = {
         400: errorSchemas.validation,
       },
     },
+    login: {
+      method: 'POST' as const,
+      path: '/api/login',
+      input: z.object({ email: z.string(), password: z.string() }),
+      responses: {
+        200: z.object({ id: z.number(), name: z.string() }),
+        401: z.object({ message: z.string() }),
+        400: errorSchemas.validation,
+      },
+    },
   },
   trainings: {
     list: {

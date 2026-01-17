@@ -12,11 +12,15 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Shield } from "lucide-react";
+import { Swords } from "lucide-react";
 import { motion } from "framer-motion";
+import { useLocation } from "wouter";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Signup() {
-  const { mutate: createUser, isPending } = useCreateUser();
+  const { mutate: signup, isPending } = useCreateUser();
+  const [, setLocation] = useLocation();
+  const { toast } = useToast();
   
   const form = useForm<InsertUser>({
     resolver: zodResolver(insertUserSchema),
@@ -27,86 +31,127 @@ export default function Signup() {
     },
   });
 
-  function onSubmit(data: InsertUser) {
-    createUser(data);
-  }
+  const handleLogin = async () => {
+    const email = form.getValues("email");
+    const password = form.getValues("password");
+    
+    if (!email || !password) {
+      toast({
+        title: "Erro",
+        description: "Preencha email e senha para entrar",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || "Erro ao entrar");
+      }
+      
+      const user = await res.json();
+      localStorage.setItem("user", JSON.stringify(user));
+      setLocation("/dashboard");
+    } catch (err: any) {
+      toast({
+        title: "Erro",
+        description: err.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const onSubmit = (data: InsertUser) => {
+    signup(data, {
+      onSuccess: (user) => {
+        localStorage.setItem("user", JSON.stringify(user));
+        setLocation("/dashboard");
+      },
+    });
+  };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-muted/20 flex flex-col items-center justify-center p-4">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="w-full max-w-md space-y-8"
+        className="w-full max-w-md bg-card p-8 rounded-2xl shadow-xl border"
       >
-        <div className="flex flex-col items-center text-center space-y-4">
-          <div className="bg-primary/10 p-4 rounded-full">
-            <Shield className="w-16 h-16 text-primary fill-primary/20" />
+        <div className="flex flex-col items-center mb-8">
+          <div className="bg-primary/10 p-4 rounded-full mb-4">
+            <Swords className="h-12 w-12 text-primary" />
           </div>
-          <h1 className="text-4xl font-black tracking-widest text-primary uppercase">
-            CADASTRO
-          </h1>
-          <p className="text-muted-foreground font-medium uppercase tracking-wide">
-            Preencha com seus dados <br/>
-            <span className="text-primary font-bold">Venha ser um Spartano!</span>
-          </p>
+          <h1 className="text-sm font-bold text-muted-foreground tracking-widest uppercase mb-1">CADASTRO</h1>
+          <h2 className="text-2xl font-black text-foreground text-center leading-tight">PREENCHA COM SEUS DADOS</h2>
+          <p className="text-primary font-medium mt-1 italic">Venha ser um Spartano!</p>
         </div>
 
-        <div className="bg-card border rounded-2xl shadow-xl p-6 md:p-8">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="font-bold text-primary">NOME COMPLETO</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Leônidas" className="h-12 bg-muted/50" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="font-bold text-primary">EMAIL</FormLabel>
-                    <FormControl>
-                      <Input type="email" placeholder="leonidas@sparta.com" className="h-12 bg-muted/50" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="font-bold text-primary">SENHA</FormLabel>
-                    <FormControl>
-                      <Input type="password" placeholder="******" className="h-12 bg-muted/50" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input placeholder="Nome..." {...field} className="h-12 bg-secondary/30" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input type="email" placeholder="E-mail..." {...field} className="h-12 bg-secondary/30" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input type="password" placeholder="Senha..." {...field} className="h-12 bg-secondary/30" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-              <Button 
-                type="submit" 
-                className="w-full h-14 text-lg font-bold shadow-lg shadow-primary/25 mt-6"
-                disabled={isPending}
-              >
-                {isPending ? "CRIANDO..." : "CRIAR UMA SENHA QUE NÃO ESQUEÇA!"}
+            <div className="pt-4 space-y-3">
+              <Button type="submit" className="w-full h-12 text-lg font-bold shadow-lg shadow-primary/20" disabled={isPending}>
+                {isPending ? "CRIANDO CONTA..." : "CADASTRAR"}
               </Button>
-            </form>
-          </Form>
-        </div>
+              
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={handleLogin}
+                className="w-full h-12 text-lg font-bold border-2 border-primary/20 text-primary hover:bg-primary/5"
+              >
+                ENTRAR (LOGIN)
+              </Button>
+            </div>
+            
+            <p className="text-center text-xs text-muted-foreground mt-4 italic flex items-center justify-center gap-1">
+              <span className="text-destructive font-bold">⚠️</span> Crie uma Senha que não esqueça!
+            </p>
+          </form>
+        </Form>
       </motion.div>
     </div>
   );

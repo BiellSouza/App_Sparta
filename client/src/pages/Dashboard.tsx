@@ -2,20 +2,21 @@ import { Header } from "@/components/Header";
 import { useTrainings } from "@/hooks/use-trainings";
 import { TrainingModal, AddTrainingModal } from "@/components/TrainingModal";
 import { Link } from "wouter";
-import { Clock, Dumbbell, BarChart3, ChevronRight } from "lucide-react";
+import { Clock, Dumbbell, BarChart3, ChevronRight, Zap, Repeat } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
 export default function Dashboard() {
   const { data: trainings, isLoading } = useTrainings();
 
-  // Find the featured training or fallback to the first one
   const featuredTraining = trainings?.find(t => t.isFeatured) || trainings?.[0];
   
   const todayTraining = featuredTraining || {
     title: "TREINO DE TIRO",
     description: "O treino deverá ser realizado em pista de atletismo ou local plano marcado. Aqueça 10min antes de iniciar os tiros.",
-    durationSeconds: 3600
+    pace: "5:30",
+    tempo: "60",
+    reps: "10"
   };
 
   return (
@@ -23,7 +24,6 @@ export default function Dashboard() {
       <Header />
       
       <main className="container max-w-md mx-auto p-4 space-y-6">
-        {/* Main Workout Card */}
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -47,16 +47,25 @@ export default function Dashboard() {
                 <p className="text-muted-foreground leading-relaxed">
                   {todayTraining.description}
                 </p>
-                <div className="mt-4 flex items-center gap-2 text-sm font-bold text-primary bg-primary/10 w-fit px-3 py-1 rounded-full">
-                  <Clock className="h-4 w-4" />
-                  {Math.floor((todayTraining.durationSeconds || 0) / 60)} MIN
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <div className="flex items-center gap-2 text-sm font-bold text-primary bg-primary/10 px-3 py-1 rounded-full">
+                    <Zap className="h-4 w-4" />
+                    {todayTraining.pace || "N/A"} PACE
+                  </div>
+                  <div className="flex items-center gap-2 text-sm font-bold text-primary bg-primary/10 px-3 py-1 rounded-full">
+                    <Clock className="h-4 w-4" />
+                    {todayTraining.tempo || "N/A"} MIN
+                  </div>
+                  <div className="flex items-center gap-2 text-sm font-bold text-primary bg-primary/10 px-3 py-1 rounded-full">
+                    <Repeat className="h-4 w-4" />
+                    {todayTraining.reps || "N/A"} REPS
+                  </div>
                 </div>
               </>
             )}
           </div>
         </motion.div>
 
-        {/* Action Grid */}
         <div className="grid grid-cols-2 gap-4">
           <AddTrainingModal />
           <TrainingModal />
@@ -81,7 +90,6 @@ export default function Dashboard() {
           </Link>
         </div>
 
-        {/* Additional Info / Tip */}
         <div className="bg-primary/5 rounded-xl p-4 border border-primary/10 flex items-start gap-3">
           <div className="bg-primary text-white rounded-full p-1 mt-0.5 shrink-0">
             <ChevronRight className="h-4 w-4" />
