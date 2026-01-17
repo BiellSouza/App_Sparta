@@ -62,13 +62,13 @@ export async function registerRoutes(
   });
 
   // Seed data
-  const trainings = await storage.getTrainings();
-  if (trainings.length === 0) {
+  const trainingsList = await storage.getTrainings();
+  if (trainingsList.length === 0) {
     await storage.createTraining({
       title: "TREINO DE TIRO",
       description: "O treino deverá ser realizado da seguinte forma: Inicie com aquecimento de 1km sem tempo definido, recupere caminhando por 5 minutos e inicie um tiro de 200 metros (1 volta no florestal) dentro do tempo e pace estimado.",
       durationSeconds: 90,
-      type: "cardio"
+      isFeatured: true,
     } as any);
   }
 

@@ -16,6 +16,7 @@ export const trainings = pgTable("trainings", {
   title: text("title").notNull(), // e.g., "TREINO DE TIRO"
   description: text("description").notNull(),
   durationSeconds: integer("duration_seconds"),
+  isFeatured: boolean("is_featured").default(false),
 });
 
 // Logs (for "Meu Histórico")
