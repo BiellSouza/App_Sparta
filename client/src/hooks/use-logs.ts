@@ -19,10 +19,20 @@ export function useCreateLog() {
 
   return useMutation({
     mutationFn: async (data: InsertTrainingLog) => {
+      // Removendo qualquer referência a date/startTime/endTime
+      const payload = {
+        userId: data.userId,
+        trainingId: data.trainingId,
+        keptPace: data.keptPace,
+        withinTime: data.withinTime,
+        allReps: data.allReps,
+        notes: data.notes,
+      }
+
       const res = await fetch(api.logs.create.path, {
         method: api.logs.create.method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       })
 
       let json

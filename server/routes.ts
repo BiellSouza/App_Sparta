@@ -95,9 +95,51 @@ export async function registerRoutes(
   })
 
   // Logs
+  // app.post(api.logs.create.path, async (req, res) => {
+  //   try {
+  //     const input = api.logs.create.input.parse(req.body)
+  //     const log = await storage.createLog(input)
+  //     res.status(201).json(log)
+  //   } catch (err) {
+  //     if (err instanceof z.ZodError) {
+  //       return res.status(400).json({
+  //         message: err.errors[0].message,
+  //         field: err.errors[0].path.join('.'),
+  //       })
+  //     }
+  //     throw err
+  //   }
+  // })
+
   app.post(api.logs.create.path, async (req, res) => {
     try {
-      const input = api.logs.create.input.parse(req.body)
+      // Clona o body
+      const inputRaw = { ...req.body }
+
+      // Converte string ISO em Date
+      if (inputRaw.date) {
+        const parsedDate = new Date(inputRaw.date)
+        if (isNaN(parsedDate.getTime())) {
+          return res.status(400).json({
+            message: 'Invalid date',
+            field: 'date',
+          })
+        }
+        inputRaw.date = parsedDate
+      }
+
+      // Converte startTime e endTime em Date, se existirem
+      const today = inputRaw.date?.toISOString().split('T')[0]
+      if (inputRaw.startTime && today) {
+        inputRaw.startTime = new Date(`${today}T${inputRaw.startTime}`)
+      }
+      if (inputRaw.endTime && today) {
+        inputRaw.endTime = new Date(`${today}T${inputRaw.endTime}`)
+      }
+
+      // Valida novamente com Zod (se necessário)
+      const input = api.logs.create.input.parse(inputRaw)
+
       const log = await storage.createLog(input)
       res.status(201).json(log)
     } catch (err) {

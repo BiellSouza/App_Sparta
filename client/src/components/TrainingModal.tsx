@@ -109,7 +109,7 @@ export function TrainingModal() {
             </Select>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="hidden ">
             <div className="grid gap-2">
               <Label htmlFor="startTime">Início</Label>
               <Input
@@ -195,6 +195,7 @@ export function TrainingModal() {
               id="notes"
               placeholder="Como você se sentiu hoje?"
               value={formData.notes}
+              required
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, notes: e.target.value }))
               }
