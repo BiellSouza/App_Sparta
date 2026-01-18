@@ -45,7 +45,7 @@ export const trainingLogs = pgTable('training_logs', {
   notes: text('notes'),
 })
 
-export const insertUserSchema = createInsertSchema(users)
+export const insertUserSchema = createInsertSchema(users).omit({ id: true })
 export const insertTrainingSchema = createInsertSchema(trainings)
 export const insertTrainingLogSchema = createInsertSchema(trainingLogs)
 

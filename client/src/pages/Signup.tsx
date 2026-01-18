@@ -27,6 +27,7 @@ export default function Signup() {
     defaultValues: {
       name: '',
       email: '',
+      phone: '',
       password: '',
     },
   })
@@ -70,7 +71,11 @@ export default function Signup() {
   }
 
   const onSubmit = (data: InsertUser) => {
-    signup(data, {
+    const payload = { ...data } as any
+    delete payload.id // remove id caso exista
+    console.log('Payload final enviado para o backend:', payload) // 🔥 Aqui você garante que id não está
+
+    signup(payload, {
       onSuccess: (user) => {
         localStorage.setItem('user', JSON.stringify(user))
         setLocation('/dashboard')

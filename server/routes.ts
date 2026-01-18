@@ -3,6 +3,7 @@ import type { Server } from 'http'
 import { storage } from './storage'
 import { api } from '@shared/routes'
 import { z } from 'zod'
+import { insertUserSchema } from '@shared/schema'
 
 export async function registerRoutes(
   httpServer: Server,
@@ -11,11 +12,17 @@ export async function registerRoutes(
   // Users
   app.post(api.users.create.path, async (req, res) => {
     try {
-      const input = api.users.create.input.parse(req.body)
+      console.log('Recebido do front-end:', req.body)
+
+      // ✅ Use schema que omite o id
+      const input = insertUserSchema.parse(req.body)
+      console.log('Validado:', input)
+
       const existing = await storage.getUserByEmail(input.email)
       if (existing) {
         return res.status(400).json({ message: 'Email already exists' })
       }
+
       const user = await storage.createUser(input)
       res.status(201).json(user)
     } catch (err) {
@@ -25,7 +32,8 @@ export async function registerRoutes(
           field: err.errors[0].path.join('.'),
         })
       }
-      throw err
+      console.error(err)
+      res.status(500).json({ message: 'Internal Server Error' })
     }
   })
 
