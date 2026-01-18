@@ -96,10 +96,10 @@ export function TrainingModal() {
                 setFormData((prev) => ({ ...prev, trainingId: v }))
               }
             >
-              <SelectTrigger>
+              <SelectTrigger className="bg-white">
                 <SelectValue placeholder="Selecione um treino..." />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white">
                 {trainings?.map((t) => (
                   <SelectItem key={t.id} value={t.id.toString()}>
                     {t.title}

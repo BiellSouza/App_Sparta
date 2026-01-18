@@ -51,13 +51,14 @@ export default function Signup() {
         body: JSON.stringify({ email, password }),
       })
 
+      const data = await res.json() // ✅ UMA ÚNICA VEZ
+
       if (!res.ok) {
-        const err = await res.json()
-        throw new Error(err.message || 'Erro ao entrar')
+        throw new Error(data.message || 'Erro ao entrar')
       }
 
-      const user = await res.json()
-      localStorage.setItem('user', JSON.stringify(user))
+      // login OK
+      localStorage.setItem('user', JSON.stringify(data))
       setLocation('/dashboard')
     } catch (err: any) {
       toast({
