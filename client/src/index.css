@@ -11,26 +11,26 @@
   /* Deep Blue Theme */
   --background: 210 20% 98%;
   --foreground: 222 47% 11%;
-  
+
   --primary: 211 100% 35%; /* #0056b3 Deep Blue */
   --primary-foreground: 210 40% 98%;
-  
+
   --secondary: 210 40% 96%;
   --secondary-foreground: 222 47% 11%;
-  
+
   --muted: 210 40% 96%;
   --muted-foreground: 215 16% 47%;
-  
+
   --accent: 211 100% 90%;
   --accent-foreground: 211 100% 35%;
-  
+
   --destructive: 0 84% 60%;
   --destructive-foreground: 210 40% 98%;
-  
+
   --border: 214 32% 91%;
   --input: 214 32% 91%;
   --ring: 211 100% 35%;
-  
+
   --radius: 0.75rem;
 }
 
@@ -40,7 +40,12 @@
     font-family: var(--font-body);
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: var(--font-display);
     @apply font-bold tracking-tight;
   }
@@ -48,6 +53,6 @@
 
 @layer utilities {
   .text-shadow {
-    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 }

@@ -16,6 +16,7 @@ import { Swords } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useLocation } from 'wouter'
 import { useToast } from '@/hooks/use-toast'
+import logo from '../logoForm.png'
 
 export default function Signup() {
   const { mutate: signup, isPending } = useCreateUser()
@@ -91,8 +92,9 @@ export default function Signup() {
         className="w-full max-w-md bg-card p-8 rounded-2xl shadow-xl border"
       >
         <div className="flex flex-col items-center mb-8">
-          <div className="bg-primary/10 p-4 rounded-full mb-4">
-            <Swords className="h-12 w-12 text-primary" />
+          <div className="bg-red-700/10 p-4 rounded-full mb-4">
+            {/* <Swords className="h-12 w-12 text-red-700" /> */}
+            <img src={logo} className="w-16" alt="Logo de Sparta" />
           </div>
           <h1 className="text-sm font-bold text-muted-foreground tracking-widest uppercase mb-1">
             CADASTRO
@@ -100,7 +102,7 @@ export default function Signup() {
           <h2 className="text-2xl font-black text-foreground text-center leading-tight">
             PREENCHA COM SEUS DADOS
           </h2>
-          <p className="text-primary font-medium mt-1 italic">
+          <p className="text-red-700 font-medium mt-1 italic">
             Venha ser um Spartano!
           </p>
         </div>
@@ -182,7 +184,7 @@ export default function Signup() {
             <div className="pt-4 space-y-3">
               <Button
                 type="submit"
-                className="w-full h-12 text-lg font-bold shadow-lg shadow-primary/20"
+                className="w-full h-12 text-lg font-bold shadow-lg shadow-red-700/20"
                 disabled={isPending}
               >
                 {isPending ? 'CRIANDO CONTA...' : 'CADASTRAR'}
@@ -192,7 +194,7 @@ export default function Signup() {
                 type="button"
                 variant="outline"
                 onClick={handleLogin}
-                className="w-full h-12 text-lg font-bold border-2 border-primary/20 text-primary hover:bg-primary/5"
+                className="w-full h-12 text-lg font-bold border-2 border-red-700/20 text-red-700 hover:bg-red-700/5"
               >
                 ENTRAR (LOGIN)
               </Button>

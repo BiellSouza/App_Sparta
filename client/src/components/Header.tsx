@@ -7,6 +7,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
+import logo from '../logo.png'
 
 export function Header({ title = 'SPARTA APP' }: { title?: string }) {
   return (
@@ -42,7 +43,8 @@ export function Header({ title = 'SPARTA APP' }: { title?: string }) {
           <h1 className="text-xl font-bold tracking-wider text-primary">
             {title}
           </h1>
-          <Shield className="h-6 w-6 text-primary fill-primary/20" />
+          {/* <Shield className="h-6 w-6 text-primary fill-primary/20" /> */}
+          <img src={logo} className='w-12' alt="Logo de Sparta" />
         </div>
       </div>
     </header>
