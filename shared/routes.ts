@@ -1,5 +1,11 @@
-import { z } from 'zod';
-import { insertUserSchema, insertTrainingLogSchema, insertTrainingSchema, trainings, trainingLogs } from './schema';
+import { z } from 'zod'
+import {
+  insertUserSchema,
+  insertTrainingLogSchema,
+  insertTrainingSchema,
+  trainings,
+  trainingLogs,
+} from './schema'
 
 export const errorSchemas = {
   validation: z.object({
@@ -12,7 +18,7 @@ export const errorSchemas = {
   internal: z.object({
     message: z.string(),
   }),
-};
+}
 
 export const api = {
   users: {
@@ -21,7 +27,10 @@ export const api = {
       path: '/api/users',
       input: insertUserSchema,
       responses: {
-        201: z.object({ id: z.number(), name: z.string() }),
+        201: z.object({
+          id: z.string().uuid(),
+          name: z.string(),
+        }),
         400: errorSchemas.validation,
       },
     },
@@ -30,12 +39,16 @@ export const api = {
       path: '/api/login',
       input: z.object({ email: z.string(), password: z.string() }),
       responses: {
-        200: z.object({ id: z.number(), name: z.string() }),
+        200: z.object({
+          id: z.string().uuid(),
+          name: z.string(),
+        }),
         401: z.object({ message: z.string() }),
         400: errorSchemas.validation,
       },
     },
   },
+
   trainings: {
     list: {
       method: 'GET' as const,
@@ -72,16 +85,19 @@ export const api = {
       },
     },
   },
-};
+}
 
-export function buildUrl(path: string, params?: Record<string, string | number>): string {
-  let url = path;
+export function buildUrl(
+  path: string,
+  params?: Record<string, string | number>,
+): string {
+  let url = path
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
       if (url.includes(`:${key}`)) {
-        url = url.replace(`:${key}`, String(value));
+        url = url.replace(`:${key}`, String(value))
       }
-    });
+    })
   }
-  return url;
+  return url
 }
