@@ -28,6 +28,7 @@ export const trainings = pgTable('trainings', {
   tempo: text('tempo'),
   reps: text('reps'),
   isFeatured: boolean('is_featured').default(false),
+  createdAt: timestamp('created_at').defaultNow(),
 })
 
 // Logs (for "Meu Histórico")
