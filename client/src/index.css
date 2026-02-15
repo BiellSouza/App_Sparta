@@ -1,18 +1,18 @@
-@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --font-display: 'Chakra Petch', sans-serif;
-  --font-body: 'Inter', sans-serif;
+  --font-display: "Chakra Petch", sans-serif;
+  --font-body: "Inter", sans-serif;
 
   /* Deep Blue Theme */
   --background: 210 20% 98%;
   --foreground: 222 47% 11%;
 
-  --primary: 211 100% 35%; /* #0056b3 Deep Blue */
+  --primary: 0 78% 35%; /* H, S, L sem o hsl() para usar com Tailwind's color utils */
   --primary-foreground: 210 40% 98%;
 
   --secondary: 210 40% 96%;

@@ -1,8 +1,8 @@
-import { Header } from '@/components/Header'
-import { useTrainings } from '@/hooks/use-trainings'
-import { TrainingModal, AddTrainingModal } from '@/components/TrainingModal'
-import { Link } from 'wouter'
-import { useState } from 'react'
+import { Header } from "@/components/Header";
+import { useTrainings } from "@/hooks/use-trainings";
+import { TrainingModal, AddTrainingModal } from "@/components/TrainingModal";
+import { Link } from "wouter";
+import { useState } from "react";
 import {
   Clock,
   Dumbbell,
@@ -10,26 +10,26 @@ import {
   ChevronRight,
   Zap,
   Repeat,
-} from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { motion } from 'framer-motion'
-import { TrainingListModal } from '@/components/TrainingListModal'
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
+import { TrainingListModal } from "@/components/TrainingListModal";
 
 export default function Dashboard() {
-  const { data: trainings, isLoading } = useTrainings()
-  const [trainingsOpen, setTrainingsOpen] = useState(false)
+  const { data: trainings, isLoading } = useTrainings();
+  const [trainingsOpen, setTrainingsOpen] = useState(false);
 
   const featuredTraining =
-    trainings?.find((t) => t.isFeatured) || trainings?.[0]
+    trainings?.find((t) => t.isFeatured) || trainings?.[0];
 
   const todayTraining = featuredTraining || {
-    title: 'TREINO DE TIRO',
+    title: "TREINO DE TIRO",
     description:
-      'O treino deverá ser realizado em pista de atletismo ou local plano marcado. Aqueça 10min antes de iniciar os tiros.',
-    pace: '5:30',
-    tempo: '60',
-    reps: '10',
-  }
+      "O treino deverá ser realizado em pista de atletismo ou local plano marcado. Aqueça 10min antes de iniciar os tiros.",
+    pace: "5:30",
+    tempo: "60",
+    reps: "10",
+  };
 
   return (
     <div className="min-h-screen bg-muted/20 pb-20">
@@ -64,15 +64,15 @@ export default function Dashboard() {
                 <div className="mt-4 flex flex-wrap gap-2">
                   <div className="flex items-center gap-2 text-sm font-bold text-primary bg-primary/10 px-3 py-1 rounded-full">
                     <Zap className="h-4 w-4" />
-                    {todayTraining.pace || 'N/A'} PACE
+                    {todayTraining.pace || "N/A"} PACE
                   </div>
                   <div className="flex items-center gap-2 text-sm font-bold text-primary bg-primary/10 px-3 py-1 rounded-full">
                     <Clock className="h-4 w-4" />
-                    {todayTraining.tempo || 'N/A'} MIN
+                    {todayTraining.tempo || "N/A"} MIN
                   </div>
                   <div className="flex items-center gap-2 text-sm font-bold text-primary bg-primary/10 px-3 py-1 rounded-full">
                     <Repeat className="h-4 w-4" />
-                    {todayTraining.reps || 'N/A'} REPS
+                    {todayTraining.reps || "N/A"} REPS
                   </div>
                 </div>
               </>
@@ -123,5 +123,5 @@ export default function Dashboard() {
         </div>
       </main>
     </div>
-  )
+  );
 }

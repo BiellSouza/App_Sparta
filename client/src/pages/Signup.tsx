@@ -1,7 +1,8 @@
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { insertUserSchema, type InsertUser } from '@shared/schema'
-import { useCreateUser } from '@/hooks/use-users'
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { insertUserSchema, type InsertUser } from "@shared/schema";
+import { useCreateUser } from "@/hooks/use-users";
+import { useState, useEffect } from "react";
 import {
   Form,
   FormControl,
@@ -9,80 +10,91 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Swords } from 'lucide-react'
-import { motion } from 'framer-motion'
-import { useLocation } from 'wouter'
-import { useToast } from '@/hooks/use-toast'
-import logo from '../logoForm.png'
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Swords } from "lucide-react";
+import { motion } from "framer-motion";
+import { useLocation } from "wouter";
+import { useToast } from "@/hooks/use-toast";
+import logo from "../logoForm.png";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function Signup() {
-  const { mutate: signup, isPending } = useCreateUser()
-  const [, setLocation] = useLocation()
-  const { toast } = useToast()
+  const [show, setShow] = useState(false);
+
+  const { mutate: signup, isPending } = useCreateUser();
+  const [, setLocation] = useLocation();
+  const { toast } = useToast();
 
   const form = useForm<InsertUser>({
     resolver: zodResolver(insertUserSchema),
     defaultValues: {
-      name: '',
-      email: '',
-      phone: '',
-      password: '',
+      name: "",
+      email: "",
+      phone: "",
+      password: "",
     },
-  })
+  });
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      // se já tiver login, vai direto pra dashboard
+      setLocation("/dashboard");
+    }
+  }, []);
 
   const handleLogin = async () => {
-    const email = form.getValues('email')
-    const password = form.getValues('password')
+    const email = form.getValues("email");
+    const password = form.getValues("password");
 
     if (!email || !password) {
       toast({
-        title: 'Erro',
-        description: 'Preencha email e senha para entrar',
-        variant: 'destructive',
-      })
-      return
+        title: "Erro",
+        description: "Preencha email e senha para entrar",
+        variant: "destructive",
+      });
+      return;
     }
 
     try {
-      const res = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
-      })
+      });
 
-      const data = await res.json() // ✅ UMA ÚNICA VEZ
+      const data = await res.json(); // ✅ UMA ÚNICA VEZ
 
       if (!res.ok) {
-        throw new Error(data.message || 'Erro ao entrar')
+        throw new Error(data.message || "Erro ao entrar");
       }
 
       // login OK
-      localStorage.setItem('user', JSON.stringify(data))
-      setLocation('/dashboard')
+      localStorage.setItem("user", JSON.stringify(data));
+      setLocation("/dashboard");
     } catch (err: any) {
       toast({
-        title: 'Erro',
+        title: "Erro",
         description: err.message,
-        variant: 'destructive',
-      })
+        variant: "destructive",
+      });
     }
-  }
+  };
 
   const onSubmit = (data: InsertUser) => {
-    const payload = { ...data } as any
-    delete payload.id // remove id caso exista
-    console.log('Payload final enviado para o backend:', payload) // 🔥 Aqui você garante que id não está
+    const payload = { ...data } as any;
+    delete payload.id; // remove id caso exista
+    console.log("Payload final enviado para o backend:", payload); // 🔥 Aqui você garante que id não está
 
     signup(payload, {
       onSuccess: (user) => {
-        localStorage.setItem('user', JSON.stringify(user))
-        setLocation('/dashboard')
+        localStorage.setItem("user", JSON.stringify(user));
+        setLocation("/dashboard");
       },
-    })
-  }
+    });
+  };
 
   return (
     <div className="min-h-screen bg-muted/20 flex flex-col items-center justify-center p-4">
@@ -152,7 +164,7 @@ export default function Signup() {
                   <FormControl>
                     <Input
                       type="tel"
-                      placeholder="21000000000"
+                      placeholder="Número..."
                       {...field}
                       className="h-12 bg-secondary/30"
                       required
@@ -168,13 +180,26 @@ export default function Signup() {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Senha..."
-                      {...field}
-                      className="h-12 bg-secondary/30"
-                      required
-                    />
+                    <div className="flex items-center gap-2">
+                      <Input
+                        type={show ? "text" : "password"}
+                        placeholder="Senha..."
+                        {...field}
+                        className="h-12 bg-secondary/30"
+                        required
+                      />
+                      <button
+                        type="button"
+                        className="bg-red-700 p-2 rounded-sm"
+                        onClick={() => setShow(!show)}
+                      >
+                        {show ? (
+                          <Eye width={20} className="text-white" />
+                        ) : (
+                          <EyeOff width={20} className="text-white" />
+                        )}
+                      </button>
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -187,7 +212,7 @@ export default function Signup() {
                 className="w-full h-12 text-lg font-bold shadow-lg shadow-red-700/20"
                 disabled={isPending}
               >
-                {isPending ? 'CRIANDO CONTA...' : 'CADASTRAR'}
+                {isPending ? "CRIANDO CONTA..." : "CADASTRAR"}
               </Button>
 
               <Button
@@ -208,5 +233,5 @@ export default function Signup() {
         </Form>
       </motion.div>
     </div>
-  )
+  );
 }
