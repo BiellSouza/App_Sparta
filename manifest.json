@@ -1,6 +1,6 @@
 {
-  "name": "APP Sparta",
-  "short_name": "MeuApp",
+  "name": "Sparta",
+  "short_name": "Sparta",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
